@@ -407,7 +407,8 @@ const firebaseConfig = {
 import {
   getDatabase,
   ref,
-  push
+  push,
+  onValue
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 const app = initializeApp(firebaseConfig);
@@ -418,7 +419,34 @@ window.db = db;
 window.dbRef = ref;
 window.dbPush = push;
 
-alert("Firebase Connected");
+window.addEventListener("DOMContentLoaded",()=>{
+
+const memoriesRef = ref(db,"memories");
+
+onValue(memoriesRef,(snapshot)=>{
+
+const data = snapshot.val();
+
+if(!data) return;
+
+Object.values(data).forEach(item=>{
+
+let memory=document.createElement("div");
+
+memory.className="memory";
+
+memory.innerText=item.text;
+
+memory.style.left=item.x+"px";
+memory.style.top=item.y+"px";
+
+world.appendChild(memory);
+
+});
+
+});
+
+});
 
 </script>
 </head>
