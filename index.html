@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAST SEEN</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+overflow:hidden;
+background:
+radial-gradient(
+circle at center,
+#ffffff 0%,
+#f3f3f3 40%,
+#e8e8e8 100%
+);
+font-family:sans-serif;
+cursor:grab;
+overflow:hidden;
+animation:
+breathe 15s ease-in-out infinite;
+}
+
+#viewport{
+width:100vw;
+height:100vh;
+overflow:hidden;
+position:relative;
+}
+
+#world{
+position:absolute;
+width:30000px;
+height:30000px;
+transform-origin:0 0;
+}
+
+.fragment{
+position:absolute;
+background:black;
+opacity:.06;
+}
+
+.line{
+position:absolute;
+height:1px;
+background:rgba(0,0,0,.03);
+transform-origin:0 0;
+}
+
+.question{
+position:absolute;
+background:rgba(255,255,255,0.55);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,0.8);
+padding:16px 24px;
+border-radius:20px;
+box-shadow:0 0 30px rgba(0,0,0,.04);
+white-space:nowrap;
+font-size:22px;
+opacity:.55;
+filter:blur(1px);
+transition:.4s;
+transform:translate(-50%,-50%);
+animation:
+float 8s ease-in-out infinite;
+mix-blend-mode:multiply;
+
+}
+
+@keyframes float{
+
+0%{
+transform:
+translate(-50%,-50%)
+translateY(0px);
+}
+
+50%{
+transform:
+translate(-50%,-50%)
+translateY(-15px);
+}
+
+100%{
+transform:
+translate(-50%,-50%)
+translateY(0px);
+}
+
+}
+
+.question:hover{
+
+opacity:1;
+
+filter:none;
+
+box-shadow:
+0 0 40px rgba(255,255,255,.9);
+
+transform:
+scale(1.15);
+
+transition:.3s;
+
+}
+
+@keyframes glitch{
+
+0%{
+filter:blur(0px);
+}
+
+25%{
+filter:blur(1px);
+}
+
+50%{
+filter:blur(2px);
+}
+
+75%{
+filter:blur(1px);
+}
+
+100%{
+filter:blur(0px);
+}
+
+}
+
+.memory{
+position:absolute;
+font-size:18px;
+font-family:inherit;
+color:#555;
+opacity:.45;
+pointer-events:none;
+white-space:nowrap;
+filter:blur(0.3px);
+letter-spacing:1px;
+font-style:italic;
+text-shadow:
+0 0 10px rgba(255,255,255,.8);
+animation:
+memoryFloat 12s ease-in-out infinite;
+}
+
+@keyframes memoryFloat{
+
+0%{
+transform:
+translateX(0px)
+translateY(0px);
+}
+
+25%{
+transform:
+translateX(20px)
+translateY(-15px);
+}
+
+50%{
+transform:
+translateX(-15px)
+translateY(-35px);
+}
+
+75%{
+transform:
+translateX(10px)
+translateY(-10px);
+}
+
+100%{
+transform:
+translateX(0px)
+translateY(0px);
+}
+
+}
+
+#title{
+position:fixed;
+bottom:25px;
+width:100%;
+text-align:center;
+font-size:32px;
+letter-spacing:4px;
+color:#888;
+pointer-events:none;
+}
+
+#halo{
+
+position:absolute;
+
+left:15000px;
+
+top:15000px;
+
+width:5000px;
+
+height:5000px;
+
+transform:translate(-50%,-50%);
+
+border-radius:50%;
+
+background:
+radial-gradient(
+circle,
+rgba(255,255,255,0.95),
+rgba(255,255,255,0)
+);
+
+pointer-events:none;
+
+}
+
+#core{
+
+position:absolute;
+
+left:15000px;
+
+top:15000px;
+
+transform:translate(-50%,-50%);
+
+font-size:42px;
+
+color:rgba(0,0,0,.15);
+
+letter-spacing:4px;
+
+pointer-events:none;
+
+animation:
+coreFloat 10s ease-in-out infinite;
+
+opacity:.25;
+
+filter:blur(1px);
+
+letter-spacing:8px;
+
+}
+
+#modal{
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 0 50px rgba(0,0,0,.15);
+z-index:999;
+}
+
+#closeBtn{
+
+position:absolute;
+top:10px;
+right:10px;
+border:none;
+background:none;
+font-size:22px;
+cursor:pointer;
+color:#777;
+}
+
+#closeBtn:hover{
+
+color:#111;
+
+}
+
+@keyframes breathe{
+
+0%{
+filter:brightness(100%);
+}
+
+50%{
+filter:brightness(96%);
+}
+
+100%{
+filter:brightness(100%);
+}
+
+}
+
+@keyframes coreFloat{
+
+0%{
+transform:
+translate(-50%,-50%)
+translateY(0px);
+}
+
+50%{
+transform:
+translate(-50%,-50%)
+translateY(-30px);
+}
+
+100%{
+transform:
+translate(-50%,-50%)
+translateY(0px);
+}
+
+}
+
+#modal textarea{
+width:300px;
+height:120px;
+padding:10px;
+}
+
+#modal button{
+margin-top:10px;
+padding:8px 15px;
+}
+
+#fog{
+
+position:fixed;
+
+left:0;
+top:0;
+
+width:100%;
+height:100%;
+
+pointer-events:none;
+
+background:
+
+radial-gradient(
+circle at center,
+rgba(255,255,255,0) 0%,
+rgba(255,255,255,0.25) 60%,
+rgba(255,255,255,0.65) 100%
+);
+
+z-index:9999;
+
+}
+
+#light{
+
+position:absolute;
+
+left:15000px;
+
+top:15000px;
+
+width:1800px;
+
+height:1800px;
+
+transform:translate(-50%,-50%);
+
+border-radius:50%;
+
+background:
+
+radial-gradient(
+circle,
+rgba(255,255,255,0.9),
+rgba(255,255,255,0)
+);
+
+pointer-events:none;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="viewport">
+<div id="world">
+<div id="halo"></div>
+<div id="light"></div>
+
+</div>
+</div>
+
+<div id="core">
+모든 사람은 언젠가 사라진다
+</div>
+
+<div id="title">LAST SEEN</div>
+
+<div id="modal">
+    <button id="closeBtn"
+onclick="closeModal()">
+✕
+</button>
+
+<p style="margin-bottom:10px;">이 질문에 답하기</p>
+<textarea id="answer"></textarea>
+<br>
+<button onclick="saveAnswer()">남기기</button>
+</div>
+
+<script>
+
+const world=document.getElementById("world");
+
+const points=[];
+
+for(let i=0;i<3500;i++){
+
+let f=document.createElement("div");
+
+f.className="fragment";
+
+let x=Math.random()*30000;
+let y=Math.random()*30000;
+
+f.style.left=x+"px";
+f.style.top=y+"px";
+
+f.style.width=(10+Math.random()*100)+"px";
+f.style.height=(1+Math.random()*10)+"px";
+
+world.appendChild(f);
+
+points.push({x,y});
+}
+
+for(let i=0;i<2000;i++){
+
+let a=points[Math.floor(Math.random()*points.length)];
+let b=points[Math.floor(Math.random()*points.length)];
+
+let dx=b.x-a.x;
+let dy=b.y-a.y;
+
+let len=Math.sqrt(dx*dx+dy*dy);
+
+let line=document.createElement("div");
+
+line.className="line";
+
+line.style.left=a.x+"px";
+line.style.top=a.y+"px";
+line.style.width=len+"px";
+
+line.style.transform=
+`rotate(${Math.atan2(dy,dx)}rad)`;
+
+world.appendChild(line);
+}
+
+const questions=[
+
+"내가 사라지면 너는 나를 기억할까?",
+"나는 좋은 사람이었을까?",
+"행복했던 순간이 있었어?",
+"나는 누군가에게 남겨졌을까?",
+"나를 떠올리면 어떤 장면이 가장 먼저 생각날까?",
+"내 삶은 충분했을까?",
+"후회되는 일이 있었어?",
+"내가 가장 사랑했던 것은 무엇이었을까?",
+"나는 잘 살아온 걸까?",
+"마지막으로 하고 싶은 말이 있었는데."
+
+];
+
+for(let i=0;i<150;i++){
+
+let q=document.createElement("div");
+
+let size =
+0.5 + Math.random()*3.0;
+
+q.className="question";
+
+q.innerText=
+questions[
+Math.floor(Math.random()*questions.length)
+];
+
+const angle =
+Math.random()*Math.PI*2;
+
+const radius =
+Math.random()*2000;
+
+const centerX = 15000;
+const centerY = 15000;
+
+q.style.left =
+(centerX + Math.cos(angle)*radius)+"px";
+
+q.style.top =
+(centerY + Math.sin(angle)*radius)+"px";
+
+q.onclick=()=>openModal(q);
+
+q.style.transform =
+`translate(-50%,-50%) scale(${size})`;
+
+world.appendChild(q);
+
+}
+
+let currentQuestion=null;
+
+function openModal(q){
+
+currentQuestion=q;
+
+document.getElementById("modal").style.display="block";
+}
+
+function saveAnswer(){
+
+const txt=
+document.getElementById("answer").value;
+
+if(!txt) return;
+
+let memory=document.createElement("div");
+
+memory.className="memory";
+
+memory.innerText=txt;
+
+memory.style.left=
+(parseFloat(currentQuestion.style.left)+
+(Math.random()*300-150))+"px";
+
+memory.style.top=
+(parseFloat(currentQuestion.style.top)+
+(Math.random()*300-150))+"px";
+
+world.appendChild(memory);
+
+document.getElementById("answer").value="";
+document.getElementById("modal").style.display="none";
+}
+
+function closeModal(){
+
+document.getElementById("modal")
+.style.display="none";
+
+}
+
+document.addEventListener("keydown",function(e){
+
+if(e.key==="Escape"){
+
+closeModal();
+
+}
+
+});
+
+let dragging=false;
+let startX,startY;
+let x=-14500;
+let y=-14500;
+let scale=1;
+
+window.addEventListener("wheel",(e)=>{
+
+e.preventDefault();
+
+scale -= e.deltaY * 0.00001;
+
+scale = Math.max(0.8,Math.min(1.8,scale));
+
+world.style.transform=
+`translate(${x}px,${y}px) scale(${scale})`;
+
+},{passive:false});
+
+document.addEventListener("mousedown",e=>{
+
+dragging=true;
+
+startX=e.clientX;
+startY=e.clientY;
+
+});
+
+document.addEventListener("mouseup",()=>{
+
+dragging=false;
+
+});
+
+document.addEventListener("mousemove",e=>{
+
+if(!dragging) return;
+
+x+=e.clientX-startX;
+y+=e.clientY-startY;
+
+startX=e.clientX;
+startY=e.clientY;
+
+updateWorld();
+
+});
+
+document.addEventListener("wheel",e=>{
+
+e.preventDefault();
+
+scale+=e.deltaY*-0.001;
+
+scale=Math.min(Math.max(.4,scale),2);
+
+updateWorld();
+
+},{passive:false});
+
+function updateWorld(){
+
+world.style.transform=
+`translate(${x}px,${y}px) scale(${scale})`;
+
+}
+
+updateWorld();
+
+</script>
+
+<div id="fog"></div>
+</body>
+</html>
