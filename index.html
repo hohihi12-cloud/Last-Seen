@@ -390,6 +390,25 @@ pointer-events:none;
 }
 
 </style>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCrxNklkzgOmQey5q7qh-Dr07fXI8lgZUA",
+  authDomain: "last-seen-67f83.firebaseapp.com",
+  databaseURL: "https://last-seen-67f83-default-rtdb.firebaseio.com",
+  projectId: "last-seen-67f83",
+  storageBucket: "last-seen-67f83.firebasestorage.app",
+  messagingSenderId: "874978195796",
+  appId: "1:874978195796:web:11c0695a6f6be5d2ddb0c1"
+};
+
+const app = initializeApp(firebaseConfig);
+
+alert("Firebase Connected");
+
+</script>
 </head>
 
 <body>
