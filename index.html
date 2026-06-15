@@ -404,7 +404,19 @@ const firebaseConfig = {
   appId: "1:874978195796:web:11c0695a6f6be5d2ddb0c1"
 };
 
+import {
+  getDatabase,
+  ref,
+  push
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
 const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+window.db = db;
+window.dbRef = ref;
+window.dbPush = push;
 
 alert("Firebase Connected");
 
@@ -553,26 +565,38 @@ document.getElementById("modal").style.display="block";
 
 function saveAnswer(){
 
-const txt=
+const txt =
 document.getElementById("answer").value;
 
 if(!txt) return;
 
-let memory=document.createElement("div");
+let memory = document.createElement("div");
 
-memory.className="memory";
+memory.className = "memory";
+memory.innerText = txt;
 
-memory.innerText=txt;
+const x =
+parseFloat(currentQuestion.style.left)+
+(Math.random()*300-150);
 
-memory.style.left=
-(parseFloat(currentQuestion.style.left)+
-(Math.random()*300-150))+"px";
+const y =
+parseFloat(currentQuestion.style.top)+
+(Math.random()*300-150);
 
-memory.style.top=
-(parseFloat(currentQuestion.style.top)+
-(Math.random()*300-150))+"px";
+memory.style.left = x + "px";
+memory.style.top = y + "px";
 
 world.appendChild(memory);
+
+window.dbPush(
+window.dbRef(window.db,"memories"),
+{
+text: txt,
+x: x,
+y: y,
+time: Date.now()
+}
+);
 
 document.getElementById("answer").value="";
 document.getElementById("modal").style.display="none";
